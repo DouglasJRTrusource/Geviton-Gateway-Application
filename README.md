@@ -49,3 +49,21 @@ This is a unified IoT Gateway application that combines three different server c
 | TruSource UDP    | 3050 | UDP      | Alternative data input     |
 | Geviton Gateway  | 3035 | HTTP     | Energy meter data          |
 | Geviton Tracker  | 3060 | HTTP     | Energy meter data (backup) |
+
+## File Architecture
+Combined Gateway Application
+├── index.js (Main entry point)
+├── package.json (Dependencies & scripts)
+├── trusourcev3/ (Advanced IoT Gateway)
+│   ├── app.js (Web interface & API)
+│   ├── servers.js (TCP/UDP servers)
+│   ├── gateway.js (Data parsing logic)
+│   ├── devices.json (Device registry)
+│   ├── templates.json (Data mapping templates)
+│   └── public/ (Web UI assets)
+├── geviton/ (Energy meter gateway)
+│   ├── server.js (HTTP server)
+│   └── logs/ (Log files)
+└── geviton-tracker/ (Backup energy meter gateway)
+    ├── server.js (HTTP server)
+    └── logs/ (Log files)
