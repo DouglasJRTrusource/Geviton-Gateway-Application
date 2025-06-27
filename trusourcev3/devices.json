@@ -1,0 +1,9 @@
+{
+  "devices": [
+    {
+      "identifier": "YOUR_DEVICE_ID",
+      "templateId": "your-template-id",
+      "description": "Your Device Description"
+    }
+  ]
+}

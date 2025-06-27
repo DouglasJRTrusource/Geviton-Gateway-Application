@@ -1,0 +1,18 @@
+{
+  "templates": [
+    {
+      "id": "your-template-id",
+      "description": "Template Description",
+      "mappings": [
+        {
+          "source": "data.field",
+          "target": "outputField",
+          "transform": {
+            "type": "divide",
+            "value": 100
+          }
+        }
+      ]
+    }
+  ]
+}
