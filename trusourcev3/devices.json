@@ -1,9 +1,14 @@
 {
   "devices": [
     {
-      "identifier": "YOUR_DEVICE_ID",
-      "templateId": "your-template-id",
-      "description": "Your Device Description"
+      "identifier": "example-device-1",
+      "templateId": "example-template-1",
+      "description": "Example Device 1"
+    },
+    {
+      "identifier": "example-device-2",
+      "templateId": "example-template-2",
+      "description": "Example Device 2"
     }
   ]
 }

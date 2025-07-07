@@ -1,15 +1,29 @@
 {
   "templates": [
     {
-      "id": "your-template-id",
-      "description": "Template Description",
+      "id": "example-template-1",
+      "description": "Example Template 1",
       "mappings": [
         {
-          "source": "data.field",
-          "target": "outputField",
+          "source": "data.field1",
+          "target": "outputField1",
           "transform": {
             "type": "divide",
             "value": 100
+          }
+        }
+      ]
+    },
+    {
+      "id": "example-template-2",
+      "description": "Example Template 2",
+      "mappings": [
+        {
+          "source": "data.field2",
+          "target": "outputField2",
+          "transform": {
+            "type": "multiply",
+            "value": 10
           }
         }
       ]

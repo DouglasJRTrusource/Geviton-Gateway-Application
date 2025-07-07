@@ -1,6 +1,7 @@
 // index.js
 const { spawn } = require("child_process");
 const path = require("path");
+const { generateMockData } = require("./trusourcev3/mockDataGenerator");
 
 const servers = [
   {
@@ -38,3 +39,6 @@ const startServer = (server) => {
 };
 
 servers.forEach(startServer);
+
+// Start mock data generator
+generateMockData(5000); // Generate mock data every 5 seconds

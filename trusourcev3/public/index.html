@@ -116,12 +116,12 @@
         devicesDiv.innerHTML = devices
           .map(
             (device) => `
-                <div class="border p-4 rounded">
-                    <h3 class="font-semibold">${device.identifier}</h3>
-                    <p>Template: ${device.templateId}</p>
-                    <p>Description: ${device.description}</p>
-                </div>
-            `,
+            <div class="border p-4 rounded">
+                <h3 class="font-semibold">${device.identifier}</h3>
+                <p>Template: ${device.templateId}</p>
+                <p>Description: ${device.description}</p>
+            </div>
+        `,
           )
           .join("");
       }
@@ -131,23 +131,19 @@
         templatesDiv.innerHTML = templates
           .map(
             (template) => `
-                <div class="border p-4 rounded">
-                    <h3 class="font-semibold">${template.id}</h3>
-                    <p>Description: ${template.description}</p>
-                    <div class="mt-2">
-                        <h4 class="font-semibold">Mappings:</h4>
-                        <ul class="list-disc pl-4">
-                            ${template.mappings
-                              .map(
-                                (m) => `
-                                <li>${m.source} → ${m.target}</li>
-                            `,
-                              )
-                              .join("")}
-                        </ul>
-                    </div>
+            <div class="border p-4 rounded">
+                <h3 class="font-semibold">${template.id}</h3>
+                <p>Description: ${template.description}</p>
+                <div class="mt-2">
+                    <h4 class="font-semibold">Mappings:</h4>
+                    <ul class="list-disc pl-4">
+                        ${template.mappings
+                          .map((m) => `<li>${m.source} → ${m.target}</li>`)
+                          .join("")}
+                    </ul>
                 </div>
-            `,
+            </div>
+        `,
           )
           .join("");
       }
@@ -162,13 +158,13 @@
       // Add Device Form
       function showAddDeviceForm() {
         const form = `
-                <form id="add-device-form" class="space-y-4">
-                    <input type="text" id="device-identifier" class="w-full px-4 py-2 border rounded" placeholder="Device Identifier">
-                    <input type="text" id="device-template-id" class="w-full px-4 py-2 border rounded" placeholder="Template ID">
-                    <input type="text" id="device-description" class="w-full px-4 py-2 border rounded" placeholder="Description">
-                    <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded">Add Device</button>
-                </form>
-            `;
+          <form id="add-device-form" class="space-y-4">
+              <input type="text" id="device-identifier" class="w-full px-4 py-2 border rounded" placeholder="Device Identifier">
+              <input type="text" id="device-template-id" class="w-full px-4 py-2 border rounded" placeholder="Template ID">
+              <input type="text" id="device-description" class="w-full px-4 py-2 border rounded" placeholder="Description">
+              <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded">Add Device</button>
+          </form>
+      `;
         document.getElementById("devices-section").innerHTML += form;
 
         document
@@ -200,13 +196,13 @@
       // Add Template Form
       function showAddTemplateForm() {
         const form = `
-                <form id="add-template-form" class="space-y-4">
-                    <input type="text" id="template-id" class="w-full px-4 py-2 border rounded" placeholder="Template ID">
-                    <input type="text" id="template-description" class="w-full px-4 py-2 border rounded" placeholder="Description">
-                    <textarea id="template-mappings" class="w-full px-4 py-2 border rounded" placeholder="Mappings (JSON)"></textarea>
-                    <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded">Add Template</button>
-                </form>
-            `;
+          <form id="add-template-form" class="space-y-4">
+              <input type="text" id="template-id" class="w-full px-4 py-2 border rounded" placeholder="Template ID">
+              <input type="text" id="template-description" class="w-full px-4 py-2 border rounded" placeholder="Description">
+              <textarea id="template-mappings" class="w-full px-4 py-2 border rounded" placeholder="Mappings (JSON)"></textarea>
+              <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded">Add Template</button>
+          </form>
+      `;
         document.getElementById("templates-section").innerHTML += form;
 
         document
