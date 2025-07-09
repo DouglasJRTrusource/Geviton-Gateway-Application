@@ -2,7 +2,7 @@
   "templates": [
     {
       "id": "example-template-1",
-      "description": "Example Template 1",
+      "description": "Example Template 1 - Basic Field Mapping",
       "mappings": [
         {
           "source": "data.field1",
@@ -16,7 +16,7 @@
     },
     {
       "id": "example-template-2",
-      "description": "Example Template 2",
+      "description": "Example Template 2 - Multiplication Transform",
       "mappings": [
         {
           "source": "data.field2",
@@ -25,6 +25,154 @@
             "type": "multiply",
             "value": 10
           }
+        }
+      ]
+    },
+    {
+      "id": "gps-template",
+      "description": "GPS Tracker Data Template",
+      "mappings": [
+        {
+          "source": "data.latitude",
+          "target": "lat"
+        },
+        {
+          "source": "data.longitude",
+          "target": "lng"
+        },
+        {
+          "source": "data.speed",
+          "target": "speed_kmh"
+        },
+        {
+          "source": "data.altitude",
+          "target": "altitude_m"
+        }
+      ]
+    },
+    {
+      "id": "gel-template",
+      "description": "GEL Energy Meter Template",
+      "mappings": [
+        {
+          "source": "data.voltage",
+          "target": "voltage"
+        },
+        {
+          "source": "data.current",
+          "target": "current"
+        },
+        {
+          "source": "data.power",
+          "target": "power"
+        },
+        {
+          "source": "data.energy",
+          "target": "energy"
+        },
+        {
+          "source": "data.frequency",
+          "target": "frequency"
+        }
+      ]
+    },
+    {
+      "id": "dani-template",
+      "description": "Dani Energy Meter Template",
+      "mappings": [
+        {
+          "source": "data.v_rms",
+          "target": "voltage"
+        },
+        {
+          "source": "data.i_rms",
+          "target": "current"
+        },
+        {
+          "source": "data.power_factor",
+          "target": "power_factor"
+        },
+        {
+          "source": "data.energy_consumed",
+          "target": "energy"
+        }
+      ]
+    },
+    {
+      "id": "temp-template",
+      "description": "Temperature and Humidity Sensor Template",
+      "mappings": [
+        {
+          "source": "data.temperature",
+          "target": "temp_celsius"
+        },
+        {
+          "source": "data.humidity",
+          "target": "humidity_percent"
+        },
+        {
+          "source": "data.pressure",
+          "target": "pressure_hpa"
+        }
+      ]
+    },
+    {
+      "id": "logging-template",
+      "description": "System Logging and Monitoring Template",
+      "mappings": [
+        {
+          "source": "data.log_level",
+          "target": "level"
+        },
+        {
+          "source": "data.message",
+          "target": "log_message"
+        },
+        {
+          "source": "data.timestamp",
+          "target": "log_timestamp"
+        },
+        {
+          "source": "data.source",
+          "target": "log_source"
+        },
+        {
+          "source": "data.error_code",
+          "target": "error_id"
+        },
+        {
+          "source": "data.severity",
+          "target": "alert_level",
+          "transform": {
+            "type": "format",
+            "format": "ALERT-{}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "security-template",
+      "description": "Security Camera Motion Detection Template",
+      "mappings": [
+        {
+          "source": "data.motion_detected",
+          "target": "motion"
+        },
+        {
+          "source": "data.motion_strength",
+          "target": "motion_intensity"
+        },
+        {
+          "source": "data.detection_zone",
+          "target": "zone"
+        },
+        {
+          "source": "data.recording_duration",
+          "target": "record_time_sec"
+        },
+        {
+          "source": "data.alert_triggered",
+          "target": "alert_status"
         }
       ]
     }

@@ -6,6 +6,7 @@ const fs = require("fs").promises;
 const path = require("path");
 const { startTcpServer, startUdpServer } = require("./servers");
 const { GatewayManager } = require("./gateway");
+const { MockDataGenerator } = require("./mockDataGenerator");
 
 const app = express();
 const server = require("http").createServer(app);
@@ -19,9 +20,10 @@ const logs = [];
 const MAX_LOGS = 1000;
 
 function addLog(message) {
-  logs.unshift({ timestamp: new Date(), message });
+  const logEntry = { timestamp: new Date(), message };
+  logs.unshift(logEntry);
   if (logs.length > MAX_LOGS) logs.pop();
-  io.emit("log", { timestamp: new Date(), message });
+  io.emit("log", logEntry);
 }
 
 // Routes
@@ -91,10 +93,32 @@ server.listen(process.env.WEB_UI_PORT || 3000, () => {
   console.log(
     `Web admin interface running on port ${process.env.WEB_UI_PORT || 3000}`,
   );
+  addLog(
+    `Web admin interface started on port ${process.env.WEB_UI_PORT || 3000}`,
+  );
 });
 
 // WebSocket for real-time updates
 io.on("connection", (socket) => {
   console.log("Client connected");
   socket.emit("logs", logs);
+
+  socket.on("disconnect", () => {
+    console.log("Client disconnected");
+  });
 });
+
+// Start mock data generator
+const mockDataGenerator = new MockDataGenerator();
+mockDataGenerator.start();
+
+// Forward mock data to WebSocket clients
+mockDataGenerator.on("data", (data) => {
+  io.emit("data", data);
+  addLog(`Data received from ${data.device}`);
+});
+
+// Add some initial logs
+addLog("IoT Gateway System Started");
+addLog("Mock data generation enabled");
+addLog("WebSocket server ready");

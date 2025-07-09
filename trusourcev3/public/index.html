@@ -7,41 +7,131 @@
       rel="stylesheet"
     />
     <script src="/socket.io/socket.io.js"></script>
+    <style>
+      .device-card {
+        transition: all 0.3s ease;
+      }
+      .device-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      }
+      .data-value {
+        font-family: "Courier New", monospace;
+      }
+      .live-indicator {
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+    </style>
   </head>
   <body class="bg-gray-100">
     <div class="container mx-auto px-4 py-8">
       <nav class="bg-white shadow-lg rounded-lg mb-8 p-4">
         <div class="flex justify-between items-center">
           <h1 class="text-2xl font-bold">IoT Gateway Admin</h1>
-          <div class="space-x-4">
-            <button
-              onclick="showSection('devices')"
-              class="px-4 py-2 bg-blue-500 text-white rounded"
-            >
-              Devices
-            </button>
-            <button
-              onclick="showSection('templates')"
-              class="px-4 py-2 bg-blue-500 text-white rounded"
-            >
-              Templates
-            </button>
-            <button
-              onclick="showSection('logs')"
-              class="px-4 py-2 bg-blue-500 text-white rounded"
-            >
-              Logs
-            </button>
+          <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-2">
+              <div
+                class="w-3 h-3 bg-green-500 rounded-full live-indicator"
+              ></div>
+              <span class="text-sm text-gray-600">Live Data</span>
+            </div>
+            <div class="space-x-2">
+              <button
+                onclick="showSection('dashboard')"
+                class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              >
+                Dashboard
+              </button>
+              <button
+                onclick="showSection('devices')"
+                class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              >
+                Devices
+              </button>
+              <button
+                onclick="showSection('templates')"
+                class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              >
+                Templates
+              </button>
+              <button
+                onclick="showSection('logs')"
+                class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              >
+                Logs
+              </button>
+              <button
+                onclick="showSection('live-data')"
+                class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+              >
+                Live Data
+              </button>
+            </div>
           </div>
         </div>
       </nav>
 
+      <!-- Dashboard Section -->
+      <div
+        id="dashboard-section"
+        class="bg-white shadow-lg rounded-lg p-6 mb-8"
+      >
+        <h2 class="text-xl font-semibold mb-4">Dashboard</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div class="bg-blue-100 p-4 rounded-lg">
+            <h3 class="font-semibold text-blue-800">Total Devices</h3>
+            <p class="text-2xl font-bold text-blue-600" id="total-devices">0</p>
+          </div>
+          <div class="bg-green-100 p-4 rounded-lg">
+            <h3 class="font-semibold text-green-800">Active Templates</h3>
+            <p class="text-2xl font-bold text-green-600" id="total-templates">
+              0
+            </p>
+          </div>
+          <div class="bg-purple-100 p-4 rounded-lg">
+            <h3 class="font-semibold text-purple-800">Data Points Today</h3>
+            <p class="text-2xl font-bold text-purple-600" id="data-points">0</p>
+          </div>
+        </div>
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <h3 class="font-semibold mb-2">System Status</h3>
+          <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-2">
+              <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+              <span class="text-sm">TCP Server: Port 3030</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+              <span class="text-sm">UDP Server: Port 3050</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+              <span class="text-sm">Web Interface: Port 3000</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Devices Section -->
-      <div id="devices-section" class="bg-white shadow-lg rounded-lg p-6 mb-8">
+      <div
+        id="devices-section"
+        class="bg-white shadow-lg rounded-lg p-6 mb-8 hidden"
+      >
         <h2 class="text-xl font-semibold mb-4">Devices</h2>
         <button
           onclick="showAddDeviceForm()"
-          class="mb-4 px-4 py-2 bg-green-500 text-white rounded"
+          class="mb-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
         >
           Add Device
         </button>
@@ -56,7 +146,7 @@
         <h2 class="text-xl font-semibold mb-4">Templates</h2>
         <button
           onclick="showAddTemplateForm()"
-          class="mb-4 px-4 py-2 bg-green-500 text-white rounded"
+          class="mb-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
         >
           Add Template
         </button>
@@ -64,11 +154,43 @@
       </div>
 
       <!-- Logs Section -->
-      <div id="logs-section" class="bg-white shadow-lg rounded-lg p-6 hidden">
+      <div
+        id="logs-section"
+        class="bg-white shadow-lg rounded-lg p-6 mb-8 hidden"
+      >
         <h2 class="text-xl font-semibold mb-4">Live Logs</h2>
+        <div class="mb-4">
+          <button
+            onclick="clearLogs()"
+            class="px-3 py-1 bg-red-500 text-white rounded text-sm hover:bg-red-600"
+          >
+            Clear Logs
+          </button>
+        </div>
         <div
           id="logs-list"
-          class="h-96 overflow-y-auto space-y-2 font-mono text-sm"
+          class="h-96 overflow-y-auto space-y-2 font-mono text-sm bg-gray-900 text-green-400 p-4 rounded"
+        ></div>
+      </div>
+
+      <!-- Live Data Section -->
+      <div
+        id="live-data-section"
+        class="bg-white shadow-lg rounded-lg p-6 mb-8 hidden"
+      >
+        <h2 class="text-xl font-semibold mb-4">Live Data Stream</h2>
+        <div class="mb-4">
+          <button
+            onclick="toggleDataStream()"
+            id="toggle-stream"
+            class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Pause Stream
+          </button>
+        </div>
+        <div
+          id="live-data-list"
+          class="space-y-4 max-h-96 overflow-y-auto"
         ></div>
       </div>
     </div>
@@ -77,38 +199,130 @@
       const socket = io();
       let devices = [];
       let templates = [];
+      let dataPoints = 0;
+      let isStreamActive = true;
 
       // Socket.io event handlers
       socket.on("log", (log) => {
         const logsDiv = document.getElementById("logs-list");
         const logEntry = document.createElement("div");
-        logEntry.className = "p-2 border-b";
-        logEntry.textContent = `${new Date(log.timestamp).toLocaleString()} - ${log.message}`;
+        logEntry.className = "border-b border-gray-700 pb-1";
+        logEntry.innerHTML = `<span class="text-gray-500">${new Date(log.timestamp).toLocaleTimeString()}</span> - ${log.message}`;
         logsDiv.insertBefore(logEntry, logsDiv.firstChild);
+
+        // Keep only last 100 logs
+        while (logsDiv.children.length > 100) {
+          logsDiv.removeChild(logsDiv.lastChild);
+        }
+      });
+
+      socket.on("data", (data) => {
+        if (isStreamActive) {
+          addLiveDataPoint(data);
+          dataPoints++;
+          updateDashboard();
+        }
       });
 
       // UI Functions
       function showSection(section) {
-        ["devices", "templates", "logs"].forEach((s) => {
-          document.getElementById(`${s}-section`).classList.add("hidden");
+        const sections = [
+          "dashboard",
+          "devices",
+          "templates",
+          "logs",
+          "live-data",
+        ];
+        sections.forEach((s) => {
+          const element = document.getElementById(`${s}-section`);
+          if (element) {
+            element.classList.add("hidden");
+          }
         });
-        document
-          .getElementById(`${section}-section`)
-          .classList.remove("hidden");
+        const targetElement = document.getElementById(`${section}-section`);
+        if (targetElement) {
+          targetElement.classList.remove("hidden");
+        }
+      }
+
+      function addLiveDataPoint(data) {
+        const liveDataDiv = document.getElementById("live-data-list");
+        const dataEntry = document.createElement("div");
+        dataEntry.className = "border p-4 rounded bg-gray-50";
+
+        const device = devices.find((d) => d.identifier === data.device);
+        const deviceName = device ? device.description : data.device;
+
+        dataEntry.innerHTML = `
+          <div class="flex justify-between items-start">
+            <div>
+              <h4 class="font-semibold text-blue-600">${deviceName}</h4>
+              <p class="text-sm text-gray-600">${new Date(data.timestamp).toLocaleString()}</p>
+            </div>
+            <span class="px-2 py-1 bg-green-100 text-green-800 rounded text-xs">New Data</span>
+          </div>
+          <div class="mt-2 grid grid-cols-2 gap-4">
+            <div>
+              <h5 class="font-medium text-gray-700">Raw Data:</h5>
+              <pre class="text-xs bg-gray-100 p-2 rounded mt-1">${JSON.stringify(data.raw, null, 2)}</pre>
+            </div>
+            <div>
+              <h5 class="font-medium text-gray-700">Parsed Data:</h5>
+              <pre class="text-xs bg-gray-100 p-2 rounded mt-1">${JSON.stringify(data.parsed, null, 2)}</pre>
+            </div>
+          </div>
+        `;
+
+        liveDataDiv.insertBefore(dataEntry, liveDataDiv.firstChild);
+
+        // Keep only last 20 data points
+        while (liveDataDiv.children.length > 20) {
+          liveDataDiv.removeChild(liveDataDiv.lastChild);
+        }
+      }
+
+      function toggleDataStream() {
+        isStreamActive = !isStreamActive;
+        const button = document.getElementById("toggle-stream");
+        button.textContent = isStreamActive ? "Pause Stream" : "Resume Stream";
+        button.className = isStreamActive
+          ? "px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          : "px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600";
+      }
+
+      function clearLogs() {
+        document.getElementById("logs-list").innerHTML = "";
       }
 
       async function loadDevices() {
-        const response = await fetch("/api/devices");
-        const data = await response.json();
-        devices = data.devices;
-        displayDevices();
+        try {
+          const response = await fetch("/api/devices");
+          const data = await response.json();
+          devices = data.devices;
+          displayDevices();
+          updateDashboard();
+        } catch (error) {
+          console.error("Error loading devices:", error);
+        }
       }
 
       async function loadTemplates() {
-        const response = await fetch("/api/templates");
-        const data = await response.json();
-        templates = data.templates;
-        displayTemplates();
+        try {
+          const response = await fetch("/api/templates");
+          const data = await response.json();
+          templates = data.templates;
+          displayTemplates();
+          updateDashboard();
+        } catch (error) {
+          console.error("Error loading templates:", error);
+        }
+      }
+
+      function updateDashboard() {
+        document.getElementById("total-devices").textContent = devices.length;
+        document.getElementById("total-templates").textContent =
+          templates.length;
+        document.getElementById("data-points").textContent = dataPoints;
       }
 
       function displayDevices() {
@@ -116,10 +330,13 @@
         devicesDiv.innerHTML = devices
           .map(
             (device) => `
-            <div class="border p-4 rounded">
-                <h3 class="font-semibold">${device.identifier}</h3>
-                <p>Template: ${device.templateId}</p>
-                <p>Description: ${device.description}</p>
+            <div class="device-card border p-4 rounded hover:shadow-md">
+                <h3 class="font-semibold text-lg">${device.identifier}</h3>
+                <p class="text-gray-600">Template: ${device.templateId}</p>
+                <p class="text-gray-600">Description: ${device.description}</p>
+                <div class="mt-2">
+                  <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">Active</span>
+                </div>
             </div>
         `,
           )
@@ -131,14 +348,17 @@
         templatesDiv.innerHTML = templates
           .map(
             (template) => `
-            <div class="border p-4 rounded">
-                <h3 class="font-semibold">${template.id}</h3>
-                <p>Description: ${template.description}</p>
+            <div class="device-card border p-4 rounded hover:shadow-md">
+                <h3 class="font-semibold text-lg">${template.id}</h3>
+                <p class="text-gray-600 mb-2">${template.description}</p>
                 <div class="mt-2">
-                    <h4 class="font-semibold">Mappings:</h4>
-                    <ul class="list-disc pl-4">
+                    <h4 class="font-semibold text-sm">Mappings:</h4>
+                    <ul class="list-disc pl-4 text-sm">
                         ${template.mappings
-                          .map((m) => `<li>${m.source} → ${m.target}</li>`)
+                          .map(
+                            (m) =>
+                              `<li><code>${m.source}</code> → <code>${m.target}</code></li>`,
+                          )
                           .join("")}
                     </ul>
                 </div>
@@ -152,20 +372,24 @@
       loadDevices();
       loadTemplates();
 
-      // Show devices section by default
-      showSection("devices");
+      // Show dashboard by default
+      showSection("dashboard");
 
       // Add Device Form
       function showAddDeviceForm() {
         const form = `
-          <form id="add-device-form" class="space-y-4">
-              <input type="text" id="device-identifier" class="w-full px-4 py-2 border rounded" placeholder="Device Identifier">
-              <input type="text" id="device-template-id" class="w-full px-4 py-2 border rounded" placeholder="Template ID">
-              <input type="text" id="device-description" class="w-full px-4 py-2 border rounded" placeholder="Description">
-              <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded">Add Device</button>
+          <form id="add-device-form" class="space-y-4 bg-gray-50 p-4 rounded-lg">
+              <input type="text" id="device-identifier" class="w-full px-4 py-2 border rounded" placeholder="Device Identifier" required>
+              <input type="text" id="device-template-id" class="w-full px-4 py-2 border rounded" placeholder="Template ID" required>
+              <input type="text" id="device-description" class="w-full px-4 py-2 border rounded" placeholder="Description" required>
+              <div class="flex space-x-2">
+                <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">Add Device</button>
+                <button type="button" onclick="cancelAddDevice()" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">Cancel</button>
+              </div>
           </form>
       `;
-        document.getElementById("devices-section").innerHTML += form;
+        document.getElementById("devices-list").innerHTML =
+          form + document.getElementById("devices-list").innerHTML;
 
         document
           .getElementById("add-device-form")
@@ -185,7 +409,9 @@
             });
 
             if (response.ok) {
-              alert("Device added successfully");
+              socket.emit("log", {
+                message: `New device added: ${identifier}`,
+              });
               loadDevices();
             } else {
               alert("Failed to add device");
@@ -193,17 +419,25 @@
           });
       }
 
+      function cancelAddDevice() {
+        loadDevices();
+      }
+
       // Add Template Form
       function showAddTemplateForm() {
         const form = `
-          <form id="add-template-form" class="space-y-4">
-              <input type="text" id="template-id" class="w-full px-4 py-2 border rounded" placeholder="Template ID">
-              <input type="text" id="template-description" class="w-full px-4 py-2 border rounded" placeholder="Description">
-              <textarea id="template-mappings" class="w-full px-4 py-2 border rounded" placeholder="Mappings (JSON)"></textarea>
-              <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded">Add Template</button>
+          <form id="add-template-form" class="space-y-4 bg-gray-50 p-4 rounded-lg">
+              <input type="text" id="template-id" class="w-full px-4 py-2 border rounded" placeholder="Template ID" required>
+              <input type="text" id="template-description" class="w-full px-4 py-2 border rounded" placeholder="Description" required>
+              <textarea id="template-mappings" class="w-full px-4 py-2 border rounded h-32" placeholder="Mappings (JSON array)" required></textarea>
+              <div class="flex space-x-2">
+                <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">Add Template</button>
+                <button type="button" onclick="cancelAddTemplate()" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">Cancel</button>
+              </div>
           </form>
       `;
-        document.getElementById("templates-section").innerHTML += form;
+        document.getElementById("templates-list").innerHTML =
+          form + document.getElementById("templates-list").innerHTML;
 
         document
           .getElementById("add-template-form")
@@ -213,23 +447,32 @@
             const description = document.getElementById(
               "template-description",
             ).value;
-            const mappings = JSON.parse(
-              document.getElementById("template-mappings").value,
-            );
 
-            const response = await fetch("/api/templates", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ id, description, mappings }),
-            });
+            try {
+              const mappings = JSON.parse(
+                document.getElementById("template-mappings").value,
+              );
 
-            if (response.ok) {
-              alert("Template added successfully");
-              loadTemplates();
-            } else {
-              alert("Failed to add template");
+              const response = await fetch("/api/templates", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id, description, mappings }),
+              });
+
+              if (response.ok) {
+                socket.emit("log", { message: `New template added: ${id}` });
+                loadTemplates();
+              } else {
+                alert("Failed to add template");
+              }
+            } catch (error) {
+              alert("Invalid JSON format for mappings");
             }
           });
+      }
+
+      function cancelAddTemplate() {
+        loadTemplates();
       }
     </script>
   </body>

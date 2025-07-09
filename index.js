@@ -1,7 +1,6 @@
 // index.js
 const { spawn } = require("child_process");
 const path = require("path");
-const { generateMockData } = require("./trusourcev3/mockDataGenerator");
 
 const servers = [
   {
@@ -38,7 +37,13 @@ const startServer = (server) => {
   });
 };
 
+console.log("Starting Combined Gateway Application...");
+console.log("=====================================");
 servers.forEach(startServer);
 
-// Start mock data generator
-generateMockData(5000); // Generate mock data every 5 seconds
+console.log("\nMock Data Generation Status:");
+console.log("- GPS Tracker: Every 3 seconds");
+console.log("- GEL Energy Meter: Every 5 seconds");
+console.log("- Dani Energy Meter: Every 7 seconds");
+console.log("- Temperature Sensor: Every 4 seconds");
+console.log("\nAccess the web interface at: http://localhost:3000");

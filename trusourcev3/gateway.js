@@ -11,8 +11,9 @@ class GatewayManager {
 
   loadData() {
     try {
-      const templatesFile = fs.readFileSync("templates.json", "utf8");
-      const devicesFile = fs.readFileSync("devices.json", "utf8");
+      const path = require("path");
+      const templatesFile = fs.readFileSync(path.join(__dirname, "templates.json"), "utf8");
+      const devicesFile = fs.readFileSync(path.join(__dirname, "devices.json"), "utf8");
 
       console.log("Loading templates:", templatesFile);
       console.log("Loading devices:", devicesFile);
@@ -90,10 +91,49 @@ class GatewayManager {
         return value * transform.value;
       case "format":
         return transform.format.replace("{}", value);
+      case "add":
+        return value + transform.value;
+      case "subtract":
+        return value - transform.value;
       default:
         return value;
     }
   }
 }
 
-module.exports = { GatewayManager };
+// Additional transformation functions for Geviton gateways
+function transformGELData(rawData) {
+  return {
+    device_type: "GEL",
+    voltage: rawData.voltage || 0,
+    current: rawData.current || 0,
+    power: rawData.power || 0,
+    energy: rawData.energy || 0,
+    frequency: rawData.frequency || 0,
+    timestamp: new Date().toISOString(),
+  };
+}
+
+function transformDaniMeterData(rawData) {
+  return {
+    device_type: "Dani",
+    v_rms: rawData.v_rms || 0,
+    i_rms: rawData.i_rms || 0,
+    power_factor: rawData.power_factor || 0,
+    energy_consumed: rawData.energy_consumed || 0,
+    timestamp: new Date().toISOString(),
+  };
+}
+
+function detectDataFormat(rawData) {
+  if (rawData.voltage && rawData.current) return "gel";
+  if (rawData.v_rms && rawData.i_rms) return "dani";
+  return "unknown";
+}
+
+module.exports = {
+  GatewayManager,
+  transformGELData,
+  transformDaniMeterData,
+  detectDataFormat,
+};

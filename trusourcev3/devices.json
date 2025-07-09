@@ -9,6 +9,52 @@
       "identifier": "example-device-2",
       "templateId": "example-template-2",
       "description": "Example Device 2"
+    },
+    {
+      "identifier": "GPS-Tracker-001",
+      "templateId": "gps-template",
+      "description": "GPS Tracking Device 001"
+    },
+    {
+      "identifier": "Energy-Meter-GEL-001",
+      "templateId": "gel-template",
+      "description": "GEL Energy Meter Device 001"
+    },
+    {
+      "identifier": "Energy-Meter-Dani-001",
+      "templateId": "dani-template",
+      "description": "Dani Energy Meter Device 001"
+    },
+    {
+      "identifier": "Temp-Sensor-001",
+      "templateId": "temp-template",
+      "description": "Temperature and Humidity Sensor 001"
+    },
+    {
+      "identifier": "LOG-DEVICE-001",
+      "templateId": "logging-template",
+      "description": "System Logging and Monitoring Device",
+      "metadata": {
+        "type": "system_monitor",
+        "location": "server_room",
+        "priority": "high",
+        "alert_thresholds": {
+          "cpu_usage": 80,
+          "memory_usage": 85,
+          "disk_usage": 90
+        }
+      }
+    },
+    {
+      "identifier": "SECURITY-CAM-001",
+      "templateId": "security-template",
+      "description": "Security Camera with Motion Detection",
+      "metadata": {
+        "location": "main_entrance",
+        "resolution": "1080p",
+        "night_vision": true,
+        "motion_sensitivity": "medium"
+      }
     }
   ]
 }
